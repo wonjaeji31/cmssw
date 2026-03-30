@@ -4,6 +4,8 @@
 <use name="SimDataFormats/TrackingAnalysis"/>
 <use name="Geometry/Records"/>
 <use name="Geometry/RPCGeometry"/>
+<use name="CondFormats/RPCObjects"/>
+<use name="CondFormats/DataRecord"/>
 <use name="root"/>
 <use name="DQMServices/Core"/>
 <flags EDM_PLUGIN="1"/>

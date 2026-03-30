@@ -21,6 +21,10 @@
 #include "SimGeneral/TrackingAnalysis/interface/SimHitTPAssociationProducer.h"
 #include "Validation/RPCRecHits/interface/RPCValidHistograms.h"
 
+#include "CondFormats/RPCObjects/interface/RPCStripNoises.h"
+#include "CondFormats/DataRecord/interface/RPCStripNoisesRcd.h"
+#include <set>
+
 #include <string>
 
 class RPCRecHitValid : public DQMEDAnalyzer {
@@ -46,6 +50,10 @@ private:
 
   edm::ESGetToken<RPCGeometry, MuonGeometryRecord> rpcGeomToken_;
   edm::ESGetToken<RPCGeometry, MuonGeometryRecord> rpcGeomTokenInRun_;
+  
+  // Eff measurement updates (masking dead channel)
+  edm::ESGetToken<RPCStripNoises, RPCStripNoisesRcd> noiseToken_;
+  std::set<uint32_t> deadRollSet_;
 
   typedef MonitorElement *MEP;
   RPCValidHistograms h_;
