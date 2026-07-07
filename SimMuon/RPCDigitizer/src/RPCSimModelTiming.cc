@@ -155,7 +155,7 @@ void RPCSimModelTiming::simulate(const RPCRoll* roll,
           adigi.setY(smearedPositionY);
           adigi.setDeltaY(sigmaY);
         }
-        irpc_digis.insert(adigi);
+        rpc_digis.insert(adigi);
         theDetectorHitMap.insert(DetectorHitMap::value_type(digi, &(*_hit)));
       }
     }
@@ -205,7 +205,7 @@ void RPCSimModelTiming::simulateNoise(const RPCRoll* roll, CLHEP::HepRandomEngin
         adigi.setY(positionY);
         adigi.setDeltaY(sigmaY);
       }
-      irpc_digis.insert(adigi);
+      rpc_digis.insert(adigi);
     }
   }
 }
