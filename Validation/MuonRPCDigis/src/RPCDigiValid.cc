@@ -1,5 +1,6 @@
 #include "Validation/MuonRPCDigis/interface/RPCDigiValid.h"
 
+#include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "SimDataFormats/CrossingFrame/interface/MixCollection.h"
 
@@ -282,3 +283,5 @@ void RPCDigiValid::bookHistograms(DQMStore::IBooker &booker, edm::Run const &run
   hResEndcapRings_[2] = booker.book1D("Residual_Endcap_Ring2", "Residual of Endcap Ring2;dx (cm)", 100, -8, 8);
   hResEndcapRings_[3] = booker.book1D("Residual_Endcap_Ring3", "Residual of Endcap Ring3;dx (cm)", 100, -8, 8);
 }
+
+DEFINE_FWK_MODULE(RPCDigiValid);

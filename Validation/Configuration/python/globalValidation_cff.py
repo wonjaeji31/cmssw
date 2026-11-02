@@ -339,6 +339,12 @@ phase2_muon.toReplaceWith( globalValidation, _phase2_globalValidation )
 from Configuration.Eras.Modifier_phase2_GE0_cff import phase2_GE0
 phase2_GE0.toReplaceWith( globalValidation, _phase2_ge0_globalValidation )
 phase2_GE0.toReplaceWith( globalPrevalidationMuons, globalPrevalidationMuons.copyAndExclude([me0SimValid]) )
+# Phase-2 RPC and iRPC digis exist only with phase2_rpc_devel
+from Configuration.Eras.Modifier_phase2_rpc_devel_cff import phase2_rpc_devel
+_globalPrevalidationMuons_rpcDevel = globalPrevalidationMuons.copy()
+_globalPrevalidationMuons_rpcDevel += validationMuonRPCDigisPhase2
+_globalPrevalidationMuons_rpcDevel += validationMuonIRPCDigis
+phase2_rpc_devel.toReplaceWith( globalPrevalidationMuons, _globalPrevalidationMuons_rpcDevel )
 from Configuration.ProcessModifiers.pp_on_AA_cff import pp_on_AA
 pp_on_AA.toReplaceWith(globalValidation, globalValidation.copyAndExclude([pfTauRunDQMValidation]))
 from Configuration.Eras.Modifier_phase2_timing_layer_cff import phase2_timing_layer
