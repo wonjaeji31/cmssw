@@ -167,27 +167,25 @@ void IRPCDigiValid::bookHistograms(DQMStore::IBooker &booker, edm::Run const &ru
   hBxDist_ =
       booker.book1D("Bunch_Crossing", "iRPC Bunch Crossing;Bunch crossing", nbinsBx, -kMaxBx - 0.5, kMaxBx + 0.5);
 
-  // iRPC timing: one bin per possible value, centred on it (same rule as BX,
-  // strip and Phase2 time), so that no digitized value falls on a bin edge.
-  const int nTimeSteps = 150;  // LR/HR: +-15 ns on the 0.1 ns grid
-  const double maxTime = (nTimeSteps + 0.5) * kTdcGrid;
-  hDigiTimeLR_ =
-      booker.book1D("DigiTimeLR", "iRPC Digi time Low Radius;Digi time (ns)", 2 * nTimeSteps + 1, -maxTime, maxTime);
-  hDigiTimeHR_ =
-      booker.book1D("DigiTimeHR", "iRPC Digi time High Radius;Digi time (ns)", 2 * nTimeSteps + 1, -maxTime, maxTime);
-  const int nAvgSteps = 200;  // LR+HR average: +-10 ns on the 0.05 ns grid
-  const double maxAvgTime = (nAvgSteps + 0.5) * kTdcGrid / 2.;
-  hDigiTime_ = booker.book1D(
-      "DigiTime", "iRPC Digi time (average LR+HR);Digi time (ns)", 2 * nAvgSteps + 1, -maxAvgTime, maxAvgTime);
-  const int nDiffSteps = 100;  // LR-HR: +-10 ns on the 0.1 ns grid
-  const double maxDiff = (nDiffSteps + 0.5) * kTdcGrid;
-  hDigiTimeDiff_ = booker.book1D(
-      "DigiTimeDiff", "iRPC time difference (LR-HR);#Delta t (ns)", 2 * nDiffSteps + 1, -maxDiff, maxDiff);
+  // iRPC timing and Y: the bin width is an even number of grid steps (close to
+  // the resolution) and every bin edge lies half-way between two possible values,
+  // so that no digitized value falls on an edge and every bin holds the same
+  // number of grid points. Bin k covers [k*width - grid/2, (k+1)*width - grid/2).
+  auto bookGrid = [&booker](const std::string &name, const std::string &title, double grid, int steps, int nbins) {
+    const double width = steps * grid;
+    const double low = -0.5 * nbins * width - 0.5 * grid;
+    return booker.book1D(name, title, nbins, low, low + nbins * width);
+  };
+  // LR/HR: 1 ns bins (10 steps of 0.1 ns), -15 ... +15 ns
+  hDigiTimeLR_ = bookGrid("DigiTimeLR", "iRPC Digi time Low Radius;Digi time (ns)", kTdcGrid, 10, 30);
+  hDigiTimeHR_ = bookGrid("DigiTimeHR", "iRPC Digi time High Radius;Digi time (ns)", kTdcGrid, 10, 30);
+  // LR+HR average: 0.5 ns bins (10 steps of 0.05 ns), -10 ... +10 ns
+  hDigiTime_ = bookGrid("DigiTime", "iRPC Digi time (average LR+HR);Digi time (ns)", kTdcGrid / 2., 10, 40);
+  // LR-HR: 1 ns bins (10 steps of 0.1 ns), -10 ... +10 ns
+  hDigiTimeDiff_ = bookGrid("DigiTimeDiff", "iRPC time difference (LR-HR);#Delta t (ns)", kTdcGrid, 10, 20);
 
-  // Coordinate Y: one bin per possible value (about 0.99 cm), centred on it
-  const int nYSteps = 100;  // about +-99 cm
-  const double maxY = (nYSteps + 0.5) * kCoordinateYGrid;
-  hCoordinateY_ = booker.book1D("CoordinateY", "iRPC Y coordinate from timing;Y (cm)", 2 * nYSteps + 1, -maxY, maxY);
+  // Coordinate Y: about 1.98 cm bins (2 steps of 0.99 cm), about -99 ... +99 cm
+  hCoordinateY_ = bookGrid("CoordinateY", "iRPC Y coordinate from timing;Y (cm)", kCoordinateYGrid, 2, 100);
   hCoordinateYRes_ = booker.book1D(
       "CoordinateY_SimHit_Difference", "iRPC Y from timing - SimHit local y;#Delta y (cm)", 80, -20., 20.);
 
